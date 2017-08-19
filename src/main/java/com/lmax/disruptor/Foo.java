@@ -3,16 +3,14 @@ package com.lmax.disruptor;
 /**
  * Created by barkerm on 13/06/17.
  */
-public class Foo
-{
+public class Foo {
     int a;
     int b;
     short c;
     short d;
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -25,8 +23,7 @@ public class Foo
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result = a;
         result = 31 * result + b;
         result = 31 * result + (int) c;

@@ -22,20 +22,17 @@ package com.lmax.disruptor;
  * <p>
  * This strategy is a good compromise between performance and CPU resource without incurring significant latency spikes.
  */
-public final class YieldingWaitStrategy implements WaitStrategy
-{
+public final class YieldingWaitStrategy implements WaitStrategy {
     private static final int SPIN_TRIES = 100;
 
     @Override
     public long waitFor(
-        final long sequence, Sequence cursor, final Sequence dependentSequence, final SequenceBarrier barrier)
-        throws AlertException, InterruptedException
-    {
+            final long sequence, Sequence cursor, final Sequence dependentSequence, final SequenceBarrier barrier)
+            throws AlertException, InterruptedException {
         long availableSequence;
         int counter = SPIN_TRIES;
 
-        while ((availableSequence = dependentSequence.get()) < sequence)
-        {
+        while ((availableSequence = dependentSequence.get()) < sequence) {
             counter = applyWaitMethod(barrier, counter);
         }
 
@@ -43,21 +40,16 @@ public final class YieldingWaitStrategy implements WaitStrategy
     }
 
     @Override
-    public void signalAllWhenBlocking()
-    {
+    public void signalAllWhenBlocking() {
     }
 
     private int applyWaitMethod(final SequenceBarrier barrier, int counter)
-        throws AlertException
-    {
+            throws AlertException {
         barrier.checkAlert();
 
-        if (0 == counter)
-        {
+        if (0 == counter) {
             Thread.yield();
-        }
-        else
-        {
+        } else {
             --counter;
         }
 

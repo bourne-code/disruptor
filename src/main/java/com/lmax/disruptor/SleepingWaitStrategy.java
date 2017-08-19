@@ -26,32 +26,27 @@ import java.util.concurrent.locks.LockSupport;
  * This strategy is a good compromise between performance and CPU resource.
  * Latency spikes can occur after quiet periods.
  */
-public final class SleepingWaitStrategy implements WaitStrategy
-{
+public final class SleepingWaitStrategy implements WaitStrategy {
     private static final int DEFAULT_RETRIES = 200;
 
     private final int retries;
 
-    public SleepingWaitStrategy()
-    {
+    public SleepingWaitStrategy() {
         this(DEFAULT_RETRIES);
     }
 
-    public SleepingWaitStrategy(int retries)
-    {
+    public SleepingWaitStrategy(int retries) {
         this.retries = retries;
     }
 
     @Override
     public long waitFor(
-        final long sequence, Sequence cursor, final Sequence dependentSequence, final SequenceBarrier barrier)
-        throws AlertException, InterruptedException
-    {
+            final long sequence, Sequence cursor, final Sequence dependentSequence, final SequenceBarrier barrier)
+            throws AlertException, InterruptedException {
         long availableSequence;
         int counter = retries;
 
-        while ((availableSequence = dependentSequence.get()) < sequence)
-        {
+        while ((availableSequence = dependentSequence.get()) < sequence) {
             counter = applyWaitMethod(barrier, counter);
         }
 
@@ -59,26 +54,19 @@ public final class SleepingWaitStrategy implements WaitStrategy
     }
 
     @Override
-    public void signalAllWhenBlocking()
-    {
+    public void signalAllWhenBlocking() {
     }
 
     private int applyWaitMethod(final SequenceBarrier barrier, int counter)
-        throws AlertException
-    {
+            throws AlertException {
         barrier.checkAlert();
 
-        if (counter > 100)
-        {
+        if (counter > 100) {
             --counter;
-        }
-        else if (counter > 0)
-        {
+        } else if (counter > 0) {
             --counter;
             Thread.yield();
-        }
-        else
-        {
+        } else {
             LockSupport.parkNanos(1L);
         }
 

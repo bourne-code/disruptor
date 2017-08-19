@@ -26,15 +26,13 @@ import com.lmax.disruptor.ExceptionHandler;
  *
  * @param <T> the type of event being handled.
  */
-public class ExceptionHandlerSetting<T>
-{
+public class ExceptionHandlerSetting<T> {
     private final EventHandler<T> eventHandler;
     private final ConsumerRepository<T> consumerRepository;
 
     ExceptionHandlerSetting(
-        final EventHandler<T> eventHandler,
-        final ConsumerRepository<T> consumerRepository)
-    {
+            final EventHandler<T> eventHandler,
+            final ConsumerRepository<T> consumerRepository) {
         this.eventHandler = eventHandler;
         this.consumerRepository = consumerRepository;
     }
@@ -44,10 +42,9 @@ public class ExceptionHandlerSetting<T>
      *
      * @param exceptionHandler the exception handler to use.
      */
-    public void with(ExceptionHandler<? super T> exceptionHandler)
-    {
+    public void with(ExceptionHandler<? super T> exceptionHandler) {
         ((BatchEventProcessor<T>) consumerRepository.getEventProcessorFor(eventHandler))
-            .setExceptionHandler(exceptionHandler);
+                .setExceptionHandler(exceptionHandler);
         consumerRepository.getBarrierFor(eventHandler).alert();
     }
 }
